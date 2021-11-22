@@ -122,6 +122,52 @@ micronaut:
             generator:
               secret: '"${JWT_GENERATOR_SIGNATURE_SECRET:pleaseChangeThisSecretForANewOne}"'
 ```
+Set authentication to bearer to receive a JSON response from the login endpoint.
+You can create a SecretSignatureConfiguration named generator via configuration as illustrated above. 
+The generator signature is used to sign the issued JWT claims.
+
+### 6. Provide a UsernameFetcher bean replacement for the Test environment
+Basically mocks the username
+```
+package example;
+
+import io.micronaut.context.annotation.Requires;
+import io.micronaut.context.env.Environment;
+import io.micronaut.http.annotation.Header;
+import jakarta.inject.Singleton;
+import reactor.core.publisher.Mono;
+
+@Requires(env = Environment.TEST)
+@Singleton
+public class UserEchoClientReplacement implements UsernameFetcher {
+
+    @Override
+    public Mono<String> findUsername(@Header("Authorization") String authorization) {
+        return Mono.just("sherlock");
+    }
+}
+```
+
+### 7. Create tests to verify the application is secured
+```
+@MicronautTest 
+public class UserControllerTest {
+
+    @Inject
+    @Client("/")
+    HttpClient client; 
+
+    @Test
+    public void testUserEndpointIsSecured() { 
+        HttpClientResponseException thrown = assertThrows(HttpClientResponseException.class, () -> {
+            client.toBlocking().exchange(HttpRequest.GET("/user"));
+        });
+
+        assertEquals(HttpStatus.UNAUTHORIZED, thrown.getResponse().getStatus());
+    }
+```
+
+
 ---------------------------------------------------------------------------
 DISCLAIMER: For educational purposes only, please refer to micronaut documentation
 https://guides.micronaut.io/latest/micronaut-token-propagation-gradle-java.html
