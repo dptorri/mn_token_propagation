@@ -75,6 +75,19 @@ public class UserController {
     }
 }
 ```
+
+### 4. Create an interface to encapsulate the collaboration with the userecho microservice.
+
+```
+package example;
+
+import io.micronaut.http.annotation.Header;
+import reactor.core.publisher.Mono;
+
+public interface UsernameFetcher {
+    Mono<String> findUsername(@Header("Authorization") String authorization);
+}
+```
 ---------------------------------------------------------------------------
 DISCLAIMER: For educational purposes only, please refer to micronaut documentation
 https://guides.micronaut.io/latest/micronaut-token-propagation-gradle-java.html
