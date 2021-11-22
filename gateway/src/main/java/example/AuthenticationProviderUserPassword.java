@@ -1,4 +1,4 @@
-package example.micronaut;
+package example;
 
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.HttpRequest;

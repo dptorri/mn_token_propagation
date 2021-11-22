@@ -13,7 +13,7 @@ responds with the username of the authenticated user.
 
 ### 1. Create Gateway service
 ```
-1) mn create-app example.micronaut.gateway --build=gradle --lang=java
+1) mn create-app example.gateway --build=gradle --lang=java
  
 // build.gradle
 annotationProcessor("io.micronaut.security:micronaut-security-annotations")
@@ -55,9 +55,26 @@ public class AuthenticationProviderUserPassword implements AuthenticationProvide
 ...
 * Closing connection 0
 ```
+### 3. Create a class UserController which exposes /user endpoint.
 
+```
+@Controller("/user") 
+public class UserController {
 
+    private final UsernameFetcher usernameFetcher;
 
+    public UserController(UsernameFetcher usernameFetcher) {  
+        this.usernameFetcher = usernameFetcher;
+    }
+
+    @Secured(SecurityRule.IS_AUTHENTICATED)  
+    @Produces(MediaType.TEXT_PLAIN) 
+    @Get 
+    Mono<String> index(@Header("Authorization") String authorization) {  
+        return usernameFetcher.findUsername(authorization);
+    }
+}
+```
 ---------------------------------------------------------------------------
 DISCLAIMER: For educational purposes only, please refer to micronaut documentation
 https://guides.micronaut.io/latest/micronaut-token-propagation-gradle-java.html
