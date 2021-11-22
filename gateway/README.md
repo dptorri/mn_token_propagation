@@ -188,8 +188,14 @@ public class UserControllerTest {
         assertEquals("sherlock", username);
     }
 ```
-
-
+### 9. Create userecho service
+```
+1) mn create-app example.userecho --build=gradle --lang=java
+ 
+// build.gradle
+annotationProcessor("io.micronaut.security:micronaut-security-annotations")
+implementation("io.micronaut.security:micronaut-security-jwt")
+```
 ---------------------------------------------------------------------------
 DISCLAIMER: For educational purposes only, please refer to micronaut documentation
 https://guides.micronaut.io/latest/micronaut-token-propagation-gradle-java.html
