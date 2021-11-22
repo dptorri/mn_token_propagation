@@ -5,6 +5,8 @@ import io.micronaut.http.HttpStatus;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.annotation.Client;
 import io.micronaut.http.client.exceptions.HttpClientResponseException;
+import io.micronaut.security.authentication.UsernamePasswordCredentials;
+import io.micronaut.security.token.jwt.render.BearerAccessRefreshToken;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
@@ -26,5 +28,18 @@ public class UserControllerTest {
         });
 
         assertEquals(HttpStatus.UNAUTHORIZED, thrown.getResponse().getStatus());
+    }
+
+    @Test
+    public void testCanFetchUsernameAfterLogin() {
+        UsernamePasswordCredentials credentials = new UsernamePasswordCredentials("sherlock", "password");
+        HttpRequest request = HttpRequest.POST("/login", credentials);
+
+        BearerAccessRefreshToken bearerAccessRefreshToken = client.toBlocking().retrieve(request, BearerAccessRefreshToken.class);
+
+        String username = client.toBlocking().retrieve(HttpRequest.GET("/user")
+                .header("Authorization", "Bearer " + bearerAccessRefreshToken.getAccessToken()), String.class);
+
+        assertEquals("sherlock", username);
     }
 }

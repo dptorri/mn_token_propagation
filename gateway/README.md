@@ -166,6 +166,28 @@ public class UserControllerTest {
         assertEquals(HttpStatus.UNAUTHORIZED, thrown.getResponse().getStatus());
     }
 ```
+### 8. Create test user can fetch username after login
+```
+@MicronautTest 
+public class UserControllerTest {
+
+    @Inject
+    @Client("/")
+    HttpClient client; 
+
+    @Test
+    public void testCanFetchUsernameAfterLogin() {
+        UsernamePasswordCredentials credentials = new UsernamePasswordCredentials("sherlock", "password");
+        HttpRequest request = HttpRequest.POST("/login", credentials);
+
+        BearerAccessRefreshToken bearerAccessRefreshToken = client.toBlocking().retrieve(request, BearerAccessRefreshToken.class);
+
+        String username = client.toBlocking().retrieve(HttpRequest.GET("/user")
+                .header("Authorization", "Bearer " + bearerAccessRefreshToken.getAccessToken()), String.class);
+
+        assertEquals("sherlock", username);
+    }
+```
 
 
 ---------------------------------------------------------------------------
