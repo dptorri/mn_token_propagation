@@ -3,3 +3,9 @@ micronaut:
     name: userecho
   server:
     port: 2222
+  security:
+    token:
+      propagation:
+        enabled: true
+        service_id_regex: "userecho"
+

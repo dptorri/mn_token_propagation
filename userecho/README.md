@@ -234,8 +234,19 @@ micronaut:
               secret: '"${JWT_GENERATOR_SIGNATURE_SECRET:pleaseChangeThisSecretForANewOne}"' 
               
 ```
-
-
+### 11. Enable Token propagation
+So far we needed to capture the Authorization header in the controller `/user` method arguments and 
+then pass it to the @Client bean. This method can lead to a lot of repetition.
+We can tell our application to propagate the incoming token to a set of outgoing requests.
+We can create a regular expression to match those services ids.
+```
+micronaut:
+  security:
+    token:
+      propagation:
+        enabled: true 
+        service-id-regex: "userecho" 
+```
 
 
 ---------------------------------------------------------------------------
