@@ -1,0 +1,6 @@
+micronaut:
+  application:
+    name: gateway
+
+  server:
+    port: 1111
