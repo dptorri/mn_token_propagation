@@ -21,7 +21,7 @@ public class UserController {
     @Secured(SecurityRule.IS_AUTHENTICATED)
     @Produces(MediaType.TEXT_PLAIN)
     @Get
-    Mono<String> index(@Header("Authorization") String authorization) {
-        return usernameFetcher.findUsername(authorization);
+    Mono<String> index() {
+        return usernameFetcher.findUsername();
     }
 }

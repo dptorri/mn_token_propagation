@@ -1,11 +1,24 @@
 micronaut:
   application:
     name: userecho
+---
+endpoints:
+  health:
+    enabled: true
+---
+#tag::port[]
+micronaut:
   server:
-    port: 2222
+    port: 2222 # <1>
+#end::port[]
+---
+#tag::security[]
+micronaut:
   security:
     token:
-      propagation:
-        enabled: true
-        service_id_regex: "userecho"
-
+      jwt:
+        signatures:
+          secret:
+            validation: # <2>
+              secret: '"${JWT_GENERATOR_SIGNATURE_SECRET:pleaseChangeThisSecretForANewOne}"' # <3>
+#end::security[]

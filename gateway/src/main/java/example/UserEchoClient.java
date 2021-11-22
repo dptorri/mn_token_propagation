@@ -17,8 +17,7 @@ import reactor.core.publisher.Mono;
 
 public interface UserEchoClient extends UsernameFetcher {
 
-    @Override
     @Consumes(MediaType.TEXT_PLAIN)
     @Get("/user")
-    Mono<String> findUsername(@Header("Authorization") String authorization);
+    Mono<String> findUsername();
 }

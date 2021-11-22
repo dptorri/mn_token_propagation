@@ -248,6 +248,8 @@ micronaut:
         service-id-regex: "userecho" 
 ```
 
+### 12. Remove unnecessary @Header in UserController, UsernameFetcher, UserEchoClient and UserEchoClientReplacement
+
 
 ---------------------------------------------------------------------------
 DISCLAIMER: For educational purposes only, please refer to micronaut documentation

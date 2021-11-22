@@ -1,21 +1,43 @@
 micronaut:
   application:
     name: gateway
-
+---
+endpoints:
+  health:
+    enabled: true
+---
+#tag::port[]
+micronaut:
   server:
     port: 1111
-
-  http:
-    services:
-      userecho:
-        urls:
-          - "http://localhost:2222"
-
+#end::port[]
+---
+#tag::security[]
+micronaut:
   security:
-    authentication: bearer
+    authentication: bearer # <1>
     token:
       jwt:
         signatures:
           secret:
-            generator:
-              secret: '"${JWT_GENERATOR_SIGNATURE_SECRET:pleaseChangeThisSecretForANewOne}"'
+            generator: # <3>
+              secret: '"${JWT_GENERATOR_SIGNATURE_SECRET:pleaseChangeThisSecretForANewOne}"' # <4>
+#end::security[]
+---
+#tag::tokenpropagation[]
+micronaut:
+  security:
+    token:
+      propagation:
+        enabled: true # <1>
+        service-id-regex: "userecho" # <2>
+#end::tokenpropagation[]
+---
+#tag::httpservices[]
+micronaut:
+  http:
+    services:
+      userecho:
+        urls:
+          - "http://localhost:2222" # <1>
+#end::httpservices[]
