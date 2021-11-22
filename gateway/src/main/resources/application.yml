@@ -4,3 +4,18 @@ micronaut:
 
   server:
     port: 1111
+
+  http:
+    services:
+      userecho:
+        urls:
+          - "http://localhost:2222"
+
+  security:
+    authentication: bearer
+    token:
+      jwt:
+        signatures:
+          secret:
+            generator:
+              secret: '"${JWT_GENERATOR_SIGNATURE_SECRET:pleaseChangeThisSecretForANewOne}"'

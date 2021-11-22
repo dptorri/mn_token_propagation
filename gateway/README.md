@@ -19,7 +19,7 @@ responds with the username of the authenticated user.
 annotationProcessor("io.micronaut.security:micronaut-security-annotations")
 implementation("io.micronaut.security:micronaut-security-jwt")
 
-// application.properties
+// application.yml
 micronaut:
   application:
     name: gateway
@@ -76,7 +76,7 @@ public class UserController {
 }
 ```
 
-### 4. Create an interface to encapsulate the collaboration with the userecho microservice.
+### 4. Create an interface to encapsulate the collaboration with the `userecho` microservice.
 
 ```
 package example;
@@ -87,6 +87,40 @@ import reactor.core.publisher.Mono;
 public interface UsernameFetcher {
     Mono<String> findUsername(@Header("Authorization") String authorization);
 }
+```
+
+### 5. Create a Micronaut HTTP Declarative @Client `userecho`
+```
+@Client(id = "userecho") 
+//@Client annotation is used with a service id. We will reference in application.yml
+
+@Requires(notEnv = Environment.TEST) 
+//Expresses that the configuration will not load within the given environments.
+
+public interface UserEchoClient extends UsernameFetcher {
+
+    @Override
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Get("/user")
+    Mono<String> findUsername(@Header("Authorization") String authorization);
+}
+
+// application.yml
+micronaut:
+  http:
+    services:
+      userecho:
+        urls:
+          - "http://localhost:2222"
+
+  security:
+    authentication: bearer
+    token:
+      jwt:
+        signatures:
+          secret:
+            generator:
+              secret: '"${JWT_GENERATOR_SIGNATURE_SECRET:pleaseChangeThisSecretForANewOne}"'
 ```
 ---------------------------------------------------------------------------
 DISCLAIMER: For educational purposes only, please refer to micronaut documentation
